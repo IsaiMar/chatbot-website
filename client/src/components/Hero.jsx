@@ -7,7 +7,7 @@ function Hero() {
       <p className="text-lg text-gray-700 mb-6">
         Fast, reliable pest control backed by AI support
       </p>
-      <a href="#book">
+      <a href="/book">
         <button className="bg-green-700 text-white px-6 py-2 rounded hover:bg-green-800">
           Book Now
         </button>

@@ -1,15 +1,36 @@
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
+  const { isLoggedIn, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
-    <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-      <h1 className="text-2xl font-bold text-green-700">PestBot</h1>
-      <ul className="flex space-x-8 text-gray-700 font-medium">
-        <li><a href="/" className="hover:text-green-700">Home</a></li>
-        <li><a href="#services" className="hover:text-green-700">Services</a></li>
-        <li><a href="#book" className="hover:text-green-700">Book</a></li>
-        <li><a href="#contact" className="hover:text-green-700">Contact</a></li>
-      </ul>
+    <nav className="bg-green-700 text-white px-6 py-4 flex justify-between items-center">
+      <div className="font-bold text-xl">
+        <Link to="/">PestControlPro</Link>
+      </div>
+
+      <div className="space-x-4">
+        <Link to="/" className="hover:underline">Home</Link>
+        <Link to="/services" className="hover:text-green-600">Services</Link>
+        <Link to="/book" className="hover:underline">Book Appointment</Link>
+        {isLoggedIn ? (
+          <button onClick={handleLogout} className="bg-red-500 px-3 py-1 rounded hover:bg-red-600">
+            Log Out
+          </button>
+        ) : (
+          <Link to="/login" className="hover:underline">
+            Login
+          </Link>
+        )}
+      </div>
     </nav>
   );
 }
