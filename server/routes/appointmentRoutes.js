@@ -1,9 +1,20 @@
 const express = require('express');
 const router = express.Router();
+const {
+  createAppointment,
+  getAppointments,
+  getAppointmentById,
+  updateAppointment,
+  deleteAppointment,
+} = require('../controllers/appointmentController');
 
-// Example GET route
-router.get('/', (req, res) => {
-  res.json({ message: 'Appointments API endpoint works!' });
-});
+router.route('/')
+  .get(getAppointments)
+  .post(createAppointment);
+
+router.route('/:id')
+  .get(getAppointmentById)
+  .put(updateAppointment)
+  .delete(deleteAppointment);
 
 module.exports = router;
