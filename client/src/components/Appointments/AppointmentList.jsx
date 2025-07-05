@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Text } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
+
+import { toast } from "react-toastify";
 
 function AppointmentList() {
   const [appointments, setAppointments] = useState([]);
@@ -41,17 +41,13 @@ function AppointmentList() {
         setModalOpened(false);
         setSelectedAppointmentId(null);
 
-        showNotification({
-          title: "Appointment Cancelled",
-          message: "The appointment has been successfully cancelled.",
-          color: "green",
-        });
-
+        toast.success("The appointment has been successfully cancelled.");
       } else {
-        console.error("Failed to cancel appointment");
+        toast.error("Failed to cancel appointment");
       }
     } catch (err) {
       console.error("Error cancelling appointment:", err);
+      toast.error("Error cancelling appointment");
     }
   };
 
@@ -79,55 +75,40 @@ function AppointmentList() {
                   <p className="text-sm italic text-gray-600">Notes: {appt.notes}</p>
                 )}
               </div>
-              <Button
-                color="red"
-                variant="outline"
-                size="xs"
+              <button
                 onClick={() => openCancelModal(appt._id)}
+                className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 text-white"
               >
                 Cancel
-              </Button>
+              </button>
             </li>
           ))}
         </ul>
       )}
-
-      {/* Mantine Modal */}
-          <Modal
-            withinPortal={false}
-            opened={modalOpened}
-            onClose={() => setModalOpened(false)}
-            title="Cancel Appointment"
-            centered
-            size="md"
-            padding="lg"
-            radius="md"
-            zIndex={1000} // Make sure it's above everything else
-            overlayProps={{
-              color: "#000",
-              opacity: 0.5,
-              blur: 3,
-            }}
-            styles={{
-              content: {
-                backgroundColor: "white",
-                borderRadius: "0.5rem",
-                boxShadow: "0 20px 50px rgba(0, 0, 0, 0.2)",
-              },
-            }}
-          >
-          <Text size="sm" mb="md">
-            Are you sure you want to cancel this appointment? This action cannot be undone.
-          </Text>
-          <div className="flex justify-end gap-3">
-            <Button variant="default" onClick={() => setModalOpened(false)}>
-              No, go back
-            </Button>
-            <Button color="red" onClick={handleCancel}>
-              Yes, cancel
-            </Button>
+      {modalOpened && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow max-w-md w-full">
+            <h3 className="text-lg font-bold mb-4">Cancel Appointment</h3>
+            <p className="text-sm mb-4">
+              Are you sure you want to cancel this appointment? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setModalOpened(false)}
+                className="px-4 py-2 text-sm border rounded hover:bg-gray-100"
+              >
+                No, go back
+              </button>
+              <button
+                onClick={handleCancel}
+                className="px-4 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Yes, cancel
+              </button>
+            </div>
           </div>
-        </Modal>
+        </div>
+      )}
     </div>
   );
 }
