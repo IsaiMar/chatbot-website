@@ -15,7 +15,7 @@ function Navbar() {
   return (
     <nav className="bg-green-700 text-white px-6 py-4 flex justify-between items-center">
       <div className="font-bold text-xl">
-        <Link to="/">PestControlPro</Link>
+        <Link to="/">Super General Pest Control</Link>
       </div>
 
       <div className="space-x-7 flex items-center">

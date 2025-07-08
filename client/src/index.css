@@ -1,8 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-#mantine-portal {
-  position: relative;
-  z-index: 10000 !important;
-}

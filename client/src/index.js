@@ -12,7 +12,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <AuthProvider>
         <App />
-        <ToastContainer /> {/* ✅ This must be rendered once in your app */}
+        <ToastContainer />
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
