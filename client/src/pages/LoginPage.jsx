@@ -1,6 +1,8 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+
 
 function LoginPage() {
   const {
@@ -11,12 +13,20 @@ function LoginPage() {
 
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    console.log("Login data:", data);
-    // Simulate login success
-    setTimeout(() => {
-      navigate("/");
-    }, 1000);
+  const onSubmit = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:8081/api/auth/login", data);
+      const token = res.data.token;
+
+      // Save token for future authenticated requests
+      localStorage.setItem("token", token);
+
+      // Navigate to account page
+      navigate("/account");
+    } catch (err) {
+      console.error("Login failed:", err.response?.data?.message || err.message);
+      alert("Invalid credentials. Please try again.");
+    }
   };
 
   return (

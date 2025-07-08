@@ -1,63 +1,76 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 function AccountPage() {
-  const [user, setUser] = useState(null);
-  const [formData, setFormData] = useState({ name: "", email: "" });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const navigate = useNavigate();
+  const [user, setUser] = useState(null)
+  const [formData, setFormData] = useState({ name: "", email: "" })
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
+  const navigate = useNavigate()
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token")
 
   useEffect(() => {
     if (!token) {
-      navigate("/login");
-      return;
+      navigate("/login")
+      return
     }
 
     const fetchUser = async () => {
       try {
         const res = await axios.get("http://localhost:8081/api/account", {
           headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(res.data);
-        setFormData({ name: res.data.name, email: res.data.email });
+        })
+        setUser(res.data)
+        setFormData({ name: res.data.name, email: res.data.email })
       } catch (err) {
-        console.error("Failed to fetch user data", err);
-        setError("Failed to load account info.");
-      }
-    };
+        console.error("Failed to fetch user data", err)
 
-    fetchUser();
-  }, [navigate, token]);
+        if (
+          err.response &&
+          (err.response.status === 401 || err.response.status === 403)
+        ) {
+          localStorage.removeItem("token")
+          navigate("/login")
+        } else {
+          setError("Failed to load account info.")
+        }
+      }
+    }
+
+    fetchUser()
+  }, [navigate, token])
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+    localStorage.removeItem("token")
+    navigate("/login")
+  }
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSuccess("");
-    setError("");
+    e.preventDefault()
+    setSuccess("")
+    setError("")
 
     try {
-      const res = await axios.put("http://localhost:8081/api/account", formData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUser(res.data);
-      setSuccess("Profile updated successfully.");
+      const res = await axios.put(
+        "http://localhost:8081/api/account",
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      setUser(res.data)
+      setSuccess("Profile updated successfully.")
     } catch (err) {
-      console.error("Failed to update profile", err);
-      setError("Update failed. Please try again.");
+      console.error("Failed to update profile", err)
+      setError("Update failed. Please try again.")
     }
-  };
+  }
 
   if (error && !user) {
     return (
@@ -70,10 +83,10 @@ function AccountPage() {
           Logout
         </button>
       </div>
-    );
+    )
   }
 
-  if (!user) return <p className="text-center mt-10">Loading...</p>;
+  if (!user) return <p className="text-center mt-10">Loading...</p>
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white shadow rounded mt-10">
@@ -121,7 +134,7 @@ function AccountPage() {
         Logout
       </button>
     </div>
-  );
+  )
 }
 
-export default AccountPage;
+export default AccountPage

@@ -1,6 +1,6 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 function RegisterPage() {
   const {
@@ -13,13 +13,25 @@ function RegisterPage() {
   const navigate = useNavigate();
   const password = watch("password");
 
-  const onSubmit = (data) => {
-    console.log("Form Data Submitted:", data);
-    // Simulate API call
-    setTimeout(() => {
-      navigate("/login");
-    }, 1000);
-  };
+const onSubmit = async (data) => {
+  try {
+    // Don't send confirmPassword to backend
+    const { name, email, password } = data;
+
+    await axios.post("http://localhost:8081/api/auth/register", {
+      name,
+      email,
+      password,
+    });
+
+    navigate("/login");
+  } catch (err) {
+    console.error("Registration error:", err);
+    const message = err.response?.data?.message || "Registration failed";
+    alert(message);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
