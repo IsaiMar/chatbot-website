@@ -10,6 +10,7 @@ function Navbar() {
   const handleLogout = () => {
     logout();
     navigate("/login");
+    window.dispatchEvent(new Event("storage")); // sync auth state
   };
 
   return (
@@ -23,10 +24,18 @@ function Navbar() {
         <Link to="/" className="hover:text-green-300">Home</Link>
         <Link to="/services" className="hover:text-green-300">Services</Link>
         <Link to="/book" className="hover:text-green-300">Book Appointment</Link>
-        <Link to="/account" className="hover:text-green-300">My Account</Link>
+
+        {isLoggedIn && (
+          <Link to="/account" className="hover:text-green-300">
+            My Account
+          </Link>
+        )}
 
         {isLoggedIn ? (
-          <button onClick={handleLogout} className="bg-red-500 px-3 py-1 rounded hover:bg-red-600">
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
+          >
             Log Out
           </button>
         ) : (

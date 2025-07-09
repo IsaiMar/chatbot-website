@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 
 function LoginPage() {
@@ -22,11 +23,12 @@ function LoginPage() {
       localStorage.setItem("token", token);
 
       // Navigate to account page
-      navigate("/account");
-    } catch (err) {
-      console.error("Login failed:", err.response?.data?.message || err.message);
-      alert("Invalid credentials. Please try again.");
-    }
+      navigate("/");
+    window.dispatchEvent(new Event("storage"));
+  } catch (err) {
+    console.error("Login failed", err);
+    toast.error("Login failed. Check your credentials.");
+  }
   };
 
   return (
