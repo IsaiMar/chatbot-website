@@ -8,13 +8,16 @@ const {
   deleteAppointment,
 } = require('../controllers/appointmentController');
 
+const authMiddleware = require('../middleware/authMiddleware');
+
+// Require authentication for all routes
 router.route('/')
-  .get(getAppointments)
-  .post(createAppointment);
+  .get(authMiddleware, getAppointments)
+  .post(authMiddleware, createAppointment);
 
 router.route('/:id')
-  .get(getAppointmentById)
-  .put(updateAppointment)
-  .delete(deleteAppointment);
+  .get(authMiddleware, getAppointmentById)
+  .put(authMiddleware, updateAppointment)
+  .delete(authMiddleware, deleteAppointment);
 
 module.exports = router;
