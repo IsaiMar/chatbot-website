@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 function AccountPage() {
   const [user, setUser] = useState(null)
   const [formData, setFormData] = useState({ name: "", email: "" })
+  const [isEditing, setIsEditing] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const navigate = useNavigate()
@@ -26,7 +27,6 @@ function AccountPage() {
         setFormData({ name: res.data.name, email: res.data.email })
       } catch (err) {
         console.error("Failed to fetch user data", err)
-
         if (
           err.response &&
           (err.response.status === 401 || err.response.status === 403)
@@ -42,10 +42,6 @@ function AccountPage() {
     fetchUser()
   }, [navigate, token])
 
-  const handleLogout = () => {
-    localStorage.removeItem("token")
-    navigate("/login")
-  }
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -66,6 +62,7 @@ function AccountPage() {
       )
       setUser(res.data)
       setSuccess("Profile updated successfully.")
+      setIsEditing(false)
     } catch (err) {
       console.error("Failed to update profile", err)
       setError("Update failed. Please try again.")
@@ -76,12 +73,6 @@ function AccountPage() {
     return (
       <div className="max-w-xl mx-auto p-6 mt-10 bg-white shadow rounded">
         <p className="text-red-600">{error}</p>
-        <button
-          onClick={handleLogout}
-          className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-        >
-          Logout
-        </button>
       </div>
     )
   }
@@ -99,7 +90,10 @@ function AccountPage() {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
+            readOnly={!isEditing}
+            className={`w-full border rounded px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
             required
           />
         </div>
@@ -111,7 +105,10 @@ function AccountPage() {
             type="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
+            readOnly={!isEditing}
+            className={`w-full border rounded px-3 py-2 ${
+              isEditing ? "bg-white" : "bg-gray-100"
+            }`}
             required
           />
         </div>
@@ -119,20 +116,40 @@ function AccountPage() {
         {success && <p className="text-green-600">{success}</p>}
         {error && <p className="text-red-600">{error}</p>}
 
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Update Profile
-        </button>
+        {isEditing && (
+          <div className="flex gap-4">
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            >
+              Save Changes
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setFormData({ name: user.name, email: user.email })
+                setIsEditing(false)
+                setSuccess("")
+                setError("")
+              }}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </form>
 
-      <button
-        onClick={handleLogout}
-        className="mt-6 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-      >
-        Logout
-      </button>
+      {!isEditing && (
+        <button
+          type="button"
+          onClick={() => setIsEditing(true)}
+          className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+        >
+          Edit
+        </button>
+      )}
+
     </div>
   )
 }

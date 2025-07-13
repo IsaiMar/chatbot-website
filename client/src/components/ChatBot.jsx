@@ -22,7 +22,6 @@ export function ChatBot() {
       })
       const data = await res.json()
 
-      // Keep the first sentence as-is, split the rest into numbered lines
       const allLines = data.reply
         .split("\n")
         .filter((line) => line.trim() !== "")
@@ -48,18 +47,18 @@ export function ChatBot() {
       </button>
 
       {isOpen && (
-        <div className="fixed bottom-4 right-4 bg-white shadow-lg rounded-lg w-[90%] sm:w-[300px] md:w-[400px] z-50 border border-[rgb(62,194,147)]">
+        <div className="fixed bottom-4 right-4 bg-white shadow-lg rounded-lg border border-[rgb(62,194,147)] z-50 w-[90vw] h-[80vh] sm:w-[50vw] sm:h-[60vh] md:w-[25vw] md:h-[50vh] flex flex-col">
           {/* Header */}
           <div
             className="p-2 rounded-t flex justify-between items-center"
             style={{ backgroundColor: "rgb(70, 168, 133)", color: "white" }}
           >
-            <span className="font-semibold">Ask AI</span>
+            <span className="font-semibold">Ask Bugsy</span>
             <button onClick={toggleChat}>✕</button>
           </div>
 
           {/* Messages */}
-          <div className="p-2 h-64 overflow-y-auto text-sm space-y-2">
+          <div className="p-2 flex-grow overflow-y-auto text-sm space-y-2">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
@@ -85,7 +84,7 @@ export function ChatBot() {
           {/* Input */}
           <div className="flex border-t p-2 bg-gray-50">
             <input
-              className="w-full sm:w-auto flex-grow p-2 sm:p-3 border border-gray-300 rounded-lg text-base sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full flex-grow p-2 border border-gray-300 rounded-lg text-base text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Ask something..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
