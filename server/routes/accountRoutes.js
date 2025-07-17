@@ -17,15 +17,17 @@ router.get('/', authMiddleware, async (req, res) => {
 
 // PUT update current user's profile
 router.put("/", authMiddleware, async (req, res) => {
-  const { name, email } = req.body;
+  const { name, email, address, phone, picture } = req.body;
 
   try {
     const user = await User.findById(req.userId);
-
     if (!user) return res.status(404).json({ message: "User not found" });
 
     user.name = name || user.name;
     user.email = email || user.email;
+    user.phone = phone !== undefined ? phone : user.phone;
+    user.address = address !== undefined ? address : user.address;
+    user.picture = picture !== undefined ? picture : user.picture;
 
     await user.save();
 
@@ -36,5 +38,6 @@ router.put("/", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 module.exports = router;

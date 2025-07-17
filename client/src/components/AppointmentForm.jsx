@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function AppointmentForm() {
   const token = localStorage.getItem("token");
@@ -16,6 +17,28 @@ function AppointmentForm() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  // Auto-fill user info if logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      axios
+        .get("http://localhost:8081/api/account", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+          const { name, email, phone } = res.data;
+          setFormData((prev) => ({
+            ...prev,
+            name: name || "",
+            email: email || "",
+            phone: phone || "",
+          }));
+        })
+        .catch((err) => {
+          console.error("Failed to auto-fill user info", err);
+        });
+    }
+  }, [isLoggedIn, token]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -29,7 +52,7 @@ function AppointmentForm() {
     try {
       const endpoint = isLoggedIn
         ? "http://localhost:8081/api/appointments"
-        : "http://localhost:8081/api/quotes"; // quote route for guests
+        : "http://localhost:8081/api/quotes";
 
       const headers = {
         "Content-Type": "application/json",
@@ -84,6 +107,7 @@ function AppointmentForm() {
           value={formData.name}
           onChange={handleChange}
           required
+          readOnly={isLoggedIn}
         />
         <input
           className="w-full p-2 border rounded"
@@ -93,6 +117,7 @@ function AppointmentForm() {
           value={formData.email}
           onChange={handleChange}
           required
+          readOnly={isLoggedIn}
         />
         <input
           className="w-full p-2 border rounded"
@@ -101,6 +126,7 @@ function AppointmentForm() {
           placeholder="Phone"
           value={formData.phone}
           onChange={handleChange}
+          readOnly={isLoggedIn}
         />
         <input
           className="w-full p-2 border rounded"
