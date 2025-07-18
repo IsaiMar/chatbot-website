@@ -33,9 +33,9 @@ function Navbar() {
           </div>
 
           <div className="hidden sm:flex space-x-6 items-center">
-            <div className="hidden sm:block">
+            {/* {/* <div className="hidden sm:block"> */}
               <ChatBot />
-            </div>
+            {/* </div> */}
             <Link to="/" className="hover:text-secondary-400 transition">Home</Link>
             <Link to="/services" className="hover:text-secondary-400 transition">Services</Link>
             <Link to="/book" className="hover:text-secondary-400 transition">Book Appointment</Link>
@@ -78,9 +78,9 @@ function Navbar() {
       </nav>
 
       {/* Mobile floating ChatBot trigger button */}
-      <div className="sm:hidden fixed bottom-4 right-4 z-50 w-16 h-16 rounded-full border-2 border-secondary-700 bg-white overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(21,128,61,0.5)] hover:shadow-[0_0_20px_rgba(21,128,61,0.7)] transition">
+      {/* <div className="sm:hidden fixed bottom-4 right-4 z-50 w-16 h-16 rounded-full border-2 border-secondary-700 bg-white overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(21,128,61,0.5)] hover:shadow-[0_0_20px_rgba(21,128,61,0.7)] transition">
         <ChatBot />
-      </div>
+      </div> */}
     </>
   );
 }

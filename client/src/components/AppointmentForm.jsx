@@ -12,6 +12,7 @@ function AppointmentForm() {
     pestType: "",
     notes: "",
     date: "",
+    timeframe: "",
   });
 
   const [message, setMessage] = useState("");
@@ -83,6 +84,7 @@ function AppointmentForm() {
         pestType: "",
         notes: "",
         date: "",
+        timeframe: "",
       });
     } catch (err) {
       setError(err.message);
@@ -107,7 +109,7 @@ function AppointmentForm() {
           value={formData.name}
           onChange={handleChange}
           required
-          readOnly={isLoggedIn}
+          // readOnly={isLoggedIn}
         />
         <input
           className="w-full p-2 border rounded"
@@ -117,7 +119,7 @@ function AppointmentForm() {
           value={formData.email}
           onChange={handleChange}
           required
-          readOnly={isLoggedIn}
+          // readOnly={isLoggedIn}
         />
         <input
           className="w-full p-2 border rounded"
@@ -126,27 +128,48 @@ function AppointmentForm() {
           placeholder="Phone"
           value={formData.phone}
           onChange={handleChange}
-          readOnly={isLoggedIn}
+          // readOnly={isLoggedIn}
         />
-        <input
+        <select
           className="w-full p-2 border rounded"
-          type="text"
           name="pestType"
-          placeholder="Type of Pest"
           value={formData.pestType}
           onChange={handleChange}
           required
-        />
+        >
+          <option value="">Select a Pest</option>
+          <option value="Ants">Ants</option>
+          <option value="Spiders">Spiders</option>
+          <option value="Rodents">Rodents</option>
+          <option value="Cockroaches">Cockroaches</option>
+          <option value="Wasps">Wasps</option>
+          <option value="Termites">Termites</option>
+        </select>
+
         {isLoggedIn && (
-          <input
-            className="w-full p-2 border rounded"
-            type="datetime-local"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            required
-          />
+          <>
+            <input
+              className="w-full p-2 border rounded"
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              required
+            />
+            <select
+              className="w-full p-2 border rounded"
+              name="timeframe"
+              value={formData.timeframe}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Preferred Timeframe</option>
+              <option value="morning">Morning (8am – 12pm)</option>
+              <option value="afternoon">Afternoon (12pm – 5pm)</option>
+            </select>
+          </>
         )}
+
         <textarea
           className="w-full p-2 border rounded"
           name="notes"

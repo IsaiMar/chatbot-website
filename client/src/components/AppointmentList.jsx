@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 function AppointmentList() {
-  const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState({ past: [], upcoming: [] });
   const [loading, setLoading] = useState(true);
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
@@ -22,11 +22,21 @@ function AppointmentList() {
     })
       .then((res) => res.json())
       .then((data) => {
-        // Sort appointments by date (newest first)
-        const sorted = data.sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
-        );
-        setAppointments(sorted);
+        const now = new Date();
+
+        const pastAppointments = data
+          .filter((appt) => new Date(appt.date) < now)
+          .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        const upcomingAppointments = data
+          .filter((appt) => new Date(appt.date) >= now)
+          .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        setAppointments({
+          past: pastAppointments,
+          upcoming: upcomingAppointments,
+        });
+
         setLoading(false);
       })
       .catch((err) => {
@@ -53,9 +63,10 @@ function AppointmentList() {
         }
       );
       if (res.ok) {
-        setAppointments((prev) =>
-          prev.filter((a) => a._id !== selectedAppointmentId)
-        );
+        setAppointments((prev) => ({
+          past: prev.past.filter((a) => a._id !== selectedAppointmentId),
+          upcoming: prev.upcoming.filter((a) => a._id !== selectedAppointmentId),
+        }));
         setModalOpened(false);
         setSelectedAppointmentId(null);
         toast.success("The appointment has been successfully cancelled.");
@@ -68,26 +79,26 @@ function AppointmentList() {
     }
   };
 
-  const mostRecent = appointments[0];
-  const otherAppointments = appointments.slice(1);
+  const mostRecent = appointments.past[0];
+  const upcoming = appointments.upcoming;
 
   return (
     <div className="max-w-4xl mx-auto p-6 mt-8 bg-light-100 shadow rounded">
       {loading ? (
         <p className="text-light-500">Loading...</p>
-      ) : appointments.length === 0 ? (
+      ) : appointments.past.length === 0 && appointments.upcoming.length === 0 ? (
         <p className="text-light-500">No appointments found.</p>
       ) : (
         <>
-          {/* Most Recent Appointment Highlight */}
+          {/* Most Recent Past Appointment */}
           {mostRecent && (
             <div className="mb-8 p-4 border-l-4 border-secondary-700 bg-light-50 rounded shadow">
               <h3 className="text-lg font-bold text-secondary-800 mb-2">
                 Most Recent Appointment
               </h3>
               <p className="font-semibold">{mostRecent.name}</p>
-              <p className="text-sm text-light-600">{mostRecent.email}</p>
-              <p className="text-sm">Phone: {mostRecent.phone}</p>
+              {/* <p className="text-sm text-light-600">{mostRecent.email}</p> */}
+              {/* <p className="text-sm">Phone: {mostRecent.phone}</p> */}
               <p className="text-sm">Pest: {mostRecent.pestType}</p>
               <p className="text-sm">
                 Date: {new Date(mostRecent.date).toLocaleString()}
@@ -105,44 +116,48 @@ function AppointmentList() {
             </div>
           )}
 
-          {/* Other Appointments */}
+          {/* Upcoming Appointments */}
+          {upcoming.length > 0 && (
+            <>
               <h3 className="text-lg font-bold text-secondary-800 mb-2">
                 Scheduled Appointments
               </h3>
-          <ul className="divide-y divide-light-300">
-            {otherAppointments.map((appt) => (
-              <li
-                key={appt._id}
-                className="flex justify-between items-start py-4"
-              >
-                <div>
-                  <p className="font-semibold text-secondary-800">{appt.name}</p>
-                  <p className="text-sm text-light-600">{appt.email}</p>
-                  <p className="text-sm">Phone: {appt.phone}</p>
-                  <p className="text-sm">Pest: {appt.pestType}</p>
-                  <p className="text-sm">
-                    Date: {new Date(appt.date).toLocaleString()}
-                  </p>
-                  {appt.notes && (
-                    <p className="text-sm italic text-light-600">
-                      Notes: {appt.notes}
-                    </p>
-                  )}
-                  {appt.technicianNotes && (
-                    <p className="text-sm text-green-800 mt-1">
-                      🛠 Tech: {appt.technicianNotes}
-                    </p>
-                  )}
-                </div>
-                <button
-                  onClick={() => openCancelModal(appt._id)}
-                  className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 text-white text-sm"
-                >
-                  Cancel
-                </button>
-              </li>
-            ))}
-          </ul>
+              <ul className="divide-y divide-light-300">
+                {upcoming.map((appt) => (
+                  <li
+                    key={appt._id}
+                    className="flex justify-between items-start py-4"
+                  >
+                    <div>
+                      <p className="font-semibold text-secondary-800">{appt.name}</p>
+                      {/* <p className="text-sm text-light-600">{appt.email}</p> */}
+                      {/* <p className="text-sm">Phone: {appt.phone}</p> */}
+                      <p className="text-sm">Pest: {appt.pestType}</p>
+                      <p className="text-sm">
+                        Date: {new Date(appt.date).toLocaleString()}
+                      </p>
+                      {appt.notes && (
+                        <p className="text-sm italic text-light-600">
+                          Notes: {appt.notes}
+                        </p>
+                      )}
+                      {appt.technicianNotes && (
+                        <p className="text-sm text-green-800 mt-1">
+                          🛠 Tech: {appt.technicianNotes}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => openCancelModal(appt._id)}
+                      className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 text-white text-sm"
+                    >
+                      Cancel
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </>
       )}
 
