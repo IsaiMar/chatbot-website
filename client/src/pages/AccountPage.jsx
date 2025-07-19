@@ -114,7 +114,7 @@ function AccountPage() {
     );
   }
 
-  if (!user) return <p className="text-center mt-10 text-light-600">Loading...</p>;
+  // if (!user) return <p className="text-center mt-10 text-light-600">Loading...</p>;
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-light-100 shadow rounded mt-10">

@@ -23,7 +23,7 @@ function LoginPage() {
       localStorage.setItem("token", token);
 
       // Navigate to account page
-      navigate("/");
+       navigate("/transition");
     window.dispatchEvent(new Event("storage"));
   } catch (err) {
     console.error("Login failed", err);

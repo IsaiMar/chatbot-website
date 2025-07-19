@@ -13,7 +13,9 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import AccountPage from "./pages/AccountPage";
-import PrivateRoute from "./components/PrivateRoute"; // if using PrivateRoute
+import PrivateRoute from "./components/PrivateRoute";
+import { MobileChatBotTrigger } from "./components/MobileChatBotTrigger";
+import TransitionPage from "./pages/TransitionPage";
 
 function App() {
   const navigate = useNavigate();
@@ -69,6 +71,7 @@ function App() {
 
         {/* Standalone routes */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/transition" element={<TransitionPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </Routes>
@@ -84,6 +87,8 @@ function App() {
         theme="light"
         position="top-center"
       />
+      {/* 💬 Mobile Chatbot Button */}
+      <MobileChatBotTrigger />
     </>
   );
 }

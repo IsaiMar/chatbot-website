@@ -9,8 +9,12 @@ function HomePage() {
   const isLoggedIn = !!localStorage.getItem("token");
 
   return (
-    <div className="font-sans text-light-700 bg-light-50">
-      <Hero />
+    <div >
+      <Hero 
+        title="Protect Your Home from Pests"
+        subtitle="Fast, reliable pest control backed by AI support"
+        backgroundImage="/images/home-hero.jpg"
+      />
 
       <section id="book" className="bg-light-200 py-16 px-4">
         <div className="max-w-3xl mx-auto px-4">

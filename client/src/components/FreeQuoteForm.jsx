@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 function FreeQuoteForm() {
   const [formData, setFormData] = useState({
@@ -16,11 +17,16 @@ function FreeQuoteForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // You can add backend logic here later
-    console.log("Quote request:", formData);
-    setSubmitted(true);
+    try {
+      const res = await axios.post("/api/quotes", formData);
+      console.log("Quote request saved:", res.data);
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Error submitting quote:", error);
+      alert("Something went wrong. Please try again later.");
+    }
   };
 
   return submitted ? (

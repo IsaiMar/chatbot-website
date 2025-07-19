@@ -14,7 +14,7 @@ function ServiceCards() {
         {services.map((s, i) => (
           <div
             key={i}
-            className="bg-green-50 border border-green-200 rounded-lg p-6 shadow hover:shadow-lg transition duration-200"
+            className="bg-green-50 border border-green-200 rounded-lg p-6 shadow shadow-lg transition duration-200"
           >
             <div className="text-green-700 text-2xl font-semibold mb-2">{s.title}</div>
             <p className="text-gray-600">{s.desc}</p>

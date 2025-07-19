@@ -22,11 +22,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/account', accountRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/quotes', quoteRoutes);
-app.use('/api', chatRoutes); // leave this last among APIs if it’s generic
+app.use('/api', chatRoutes);
 
-// Catch-all: serve React app for unknown routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
-});
+
 
 module.exports = app;

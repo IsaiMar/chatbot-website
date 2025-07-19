@@ -5,10 +5,11 @@ export function ChatBot() {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
-  const [position, setPosition] = useState({ x: 20, y: 20 }) // right, bottom
+  const [position, setPosition] = useState({ x: 20, y: 20 })
   const [isDragging, setIsDragging] = useState(false)
   const [offset, setOffset] = useState({ x: 0, y: 0 })
   const [isMinimized, setIsMinimized] = useState(false)
+  const [context, setContext] = useState(null);
 
   const bottomRef = useRef(null)
 
@@ -25,29 +26,36 @@ export function ChatBot() {
     })
   }
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setContext(token ? "booking" : "sales");
+  }, []);
+
   const handleSend = async () => {
-    if (!input.trim()) return
-    const userMessage = { role: "user", content: input }
-    setMessages((prev) => [...prev, userMessage])
-    setInput("")
-    setLoading(true)
+    if (!input.trim() || !context) return;
+
+    const userMessage = { role: "user", content: input };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setLoading(true);
 
     try {
       const res = await fetch("http://localhost:8081/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
-      })
-      const data = await res.json()
-      const allLines = data.reply.split("\n").filter((line) => line.trim() !== "")
-      const botMessage = { role: "bot", content: allLines }
-      setMessages((prev) => [...prev, botMessage])
+        body: JSON.stringify({ message: input, context }), 
+      });
+
+      const data = await res.json();
+      const allLines = data.reply.split("\n").filter((line) => line.trim() !== "");
+      const botMessage = { role: "bot", content: allLines };
+      setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
-      console.error("Error:", err)
+      console.error("Error:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -129,6 +137,8 @@ export function ChatBot() {
 
           {!isMinimized && (
             <>
+              {/* Show context for testing only.*/}
+              <p className="text-xs text-gray-400 text-center">Context: {context}</p> 
               <div className="p-2 overflow-y-auto text-sm flex flex-col space-y-2 max-h-[60vh] flex-grow">
                 {messages.map((msg, idx) => (
                   <div

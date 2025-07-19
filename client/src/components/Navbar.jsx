@@ -1,19 +1,21 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { ChatBot } from "./ChatBot";
 import { Menu, X } from "lucide-react";
 
 function Navbar() {
   const { isLoggedIn, logout } = useAuth();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    localStorage.removeItem("token");
+    window.location.href = "/";  
+    // navigate("/");
     window.dispatchEvent(new Event("storage"));
-    setMenuOpen(false);
+    // setMenuOpen(false);
   };
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -77,10 +79,6 @@ function Navbar() {
         )}
       </nav>
 
-      {/* Mobile floating ChatBot trigger button */}
-      {/* <div className="sm:hidden fixed bottom-4 right-4 z-50 w-16 h-16 rounded-full border-2 border-secondary-700 bg-white overflow-hidden flex items-center justify-center shadow-[0_0_10px_rgba(21,128,61,0.5)] hover:shadow-[0_0_20px_rgba(21,128,61,0.7)] transition">
-        <ChatBot />
-      </div> */}
     </>
   );
 }
